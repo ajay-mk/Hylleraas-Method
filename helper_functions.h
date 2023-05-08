@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include "Eigen/Eigen"
 
 #ifndef HYLLERAAS_HELPER_FUNCTIONS_H
