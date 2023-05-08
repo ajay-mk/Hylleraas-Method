@@ -10,6 +10,11 @@
 #ifndef HYLLERAAS_HELPER_FUNCTIONS_H
 #define HYLLERAAS_HELPER_FUNCTIONS_H
 
+// TypeDefs
+typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
+// example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
+// general: {{{n,l,m},{alpha/2, beta/2, gamma/2}}}
+
 // Function Declarations
 /// Computes factorial of a number
 int factorial(int n);
@@ -35,5 +40,8 @@ double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj,
 /// Evaluates kinetic energy T_ij [Equation 45]
 double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma);
+
+/// Evaluates overlap matrix S
+Eigen::MatrixXd compute_overlap(const BasisFn &basis);
 
 #endif // HYLLERAAS_HELPER_FUNCTIONS_H

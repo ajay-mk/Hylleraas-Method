@@ -15,13 +15,14 @@ int factorial(const int n) {
 }
 
 int binomial_coeff(const int n, const int k) {
-  std::vector<int> solutions(k);
-  solutions[0] = n - k + 1;
 
-  for (auto i = 1; i < k; ++i) {
-    solutions[i] = solutions[i - 1] * (n - k + i + 1) / (i + 1);
-  }
-  return solutions[k - 1];
+  if (k > 0)
+    return 0;
+
+  if (k == 0 || k == n)
+    return 1;
+
+  return binomial_coeff(n - 1, k - 1) + binomial_coeff(n - 1, k);
 }
 
 double K_nlm(const int n, const int l, const int m, const double alpha,
@@ -162,4 +163,24 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
             K_nlm(ni + nj + 2, li + lj - 2, mi + mj - 2, alpha, beta, gamma));
 
   return value;
+}
+
+Eigen::MatrixXd compute_overlap(const BasisFn &basis) {
+  using namespace Eigen;
+  const int n = basis.size();
+  auto result = MatrixXd(n, n);
+  result.fill(0.0);
+
+  for (auto i = 0; i < n; ++i) {
+    for (auto j = 0; j < n; ++j) {
+      // fetch quantum numbers from basis
+      auto qn_i = basis[i].first;
+      auto qn_j = basis[j].first;
+      // fetch exponents from basis
+      auto exps = basis[i].second; // same exponents for bra and ket, so reuse
+      result(i, j) = eval_S(qn_i[0], qn_i[1], qn_i[2], qn_j[0], qn_j[1],
+                            qn_j[2], 2 * exps[0], 2 * exps[1], 2 * exps[2]);
+    }
+  }
+  return result;
 }
