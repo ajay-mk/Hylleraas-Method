@@ -6,7 +6,25 @@
 
 // Function Definitions
 
-double K_nlm(const int n, const double l, const double m, const double alpha,
+int factorial(const int n) {
+  assert(n >= 0);
+  if (n == 0)
+    return 1;
+  else
+    return (n * factorial(n - 1));
+}
+
+int binomial_coeff(const int n, const int k) {
+  std::vector<int> solutions(k);
+  solutions[0] = n - k + 1;
+
+  for (auto i = 1; i < k; ++i) {
+    solutions[i] = solutions[i - 1] * (n - k + i + 1) / (i + 1);
+  }
+  return solutions[k - 1];
+}
+
+double K_nlm(const int n, const int l, const int m, const double alpha,
              const double beta, const double gamma) {
 
   auto pre_fac = 16 * pow(M_PI, 2) * factorial(n + 1) * factorial(l + 1) *
@@ -29,20 +47,34 @@ double K_nlm(const int n, const double l, const double m, const double alpha,
   return result;
 }
 
-int factorial(const int n){
-  assert(n >= 0);
-  if (n == 0)
-    return 1;
-  else
-    return (n * factorial(n-1));
+double eval_S(const int ni, const int li, const int mi, const int nj,
+              const int lj, const int mj, const double alpha, const double beta,
+              const double gamma) {
+  // bra and ket have the same exponential parameters alpha, beta and gamma
+  return K_nlm(ni + nj, li + lj, mi + mj, alpha, beta, gamma);
 }
 
-int binomial_coeff(const int n, const int k){
-  std::vector<int> solutions(k);
-  solutions[0] = n - k + 1;
+double eval_nuc_attr(const double Z, const int ni, const int li, const int mi,
+                     const int nj, const int lj, const int mj,
+                     const double alpha, const double beta,
+                     const double gamma) {
+  // bra and ket have the same exponential parameters alpha, beta and gamma
+  // term 1
+  const auto t1 = K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
+  // term 2
+  const auto t2 = K_nlm(ni + nj, li + lj - 1, mi + mj, alpha, beta, gamma);
 
-  for (auto i = 1 ; i < k; ++i){
-    solutions[i] = solutions[i-1] * (n - k + i + 1)/(i + 1);
-  }
-  return solutions[k-1];
+  return (-Z * (t1 + t2));
+}
+
+double eval_elec_rep(const int ni, const int li, const int mi, const int nj,
+                     const int lj, const int mj, const double alpha,
+                     const double beta, const double gamma) {
+  // bra and ket have the same exponential parameters alpha, beta and gamma
+  return K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma);
+}
+
+double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+              double beta, double gamma) {
+  ;
 }
