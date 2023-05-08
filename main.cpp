@@ -15,5 +15,8 @@ int main(int argc, char *argv[]) {
   BasisFn test_basis = {{{0,0,0},{1.6875, 1.6875, 0.0}}}; // see typedef
 
   std::cout << compute_overlap(test_basis) << std::endl;
+
+  // Testing
+
   return 0;
 }

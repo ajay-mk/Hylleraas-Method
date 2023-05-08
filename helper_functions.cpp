@@ -16,7 +16,7 @@ int factorial(const int n) {
 
 int binomial_coeff(const int n, const int k) {
 
-  if (k > 0)
+  if (k > n)
     return 0;
 
   if (k == 0 || k == n)
@@ -38,7 +38,7 @@ double K_nlm(const int n, const int l, const int m, const double alpha,
       for (auto c = 0; c <= m + 1; ++c) {
         value += binomial_coeff(l + 1 - b + a, a) *
                  binomial_coeff(m + 1 - c + b, b) *
-                 binomial_coeff(n + 1 - c + c, c) /
+                 binomial_coeff(n + 1 - a + c, c) /
                  (pow(alpha + beta, l - b + a + 2) *
                   pow(alpha + gamma, n - a + c + 2) *
                   pow(beta + gamma, m - c + b + 2));
