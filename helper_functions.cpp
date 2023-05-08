@@ -76,5 +76,88 @@ double eval_elec_rep(const int ni, const int li, const int mi, const int nj,
 
 double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma) {
-  ;
+  double value = 0.0;
+  // first line
+  value += (-1.0 / 8.0) * (pow(alpha, 2) + pow(beta, 2) + 2 * pow(gamma, 2)) *
+           eval_S(ni, li, mi, nj, lj, mj, alpha, beta, gamma);
+
+  // second line
+  value += (nj * alpha / 2.0) *
+           K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
+  value += (lj * beta / 2.0) *
+           K_nlm(ni + nj, li + lj - 1, mi + mj, alpha, beta, gamma);
+  value +=
+      (mj * gamma) * K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma);
+
+  // third line
+  value += (-nj * (nj - 1) / 2.0) *
+           K_nlm(ni + nj - 2, li + lj, mi + mj, alpha, beta, gamma);
+  value += (-lj * (lj - 1) / 2.0) *
+           K_nlm(ni + nj, li + lj - 2, mi + mj, alpha, beta, gamma);
+
+  // fourth line
+  value += (mj * (mj - 1)) *
+           K_nlm(ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma);
+
+  // fifth line
+  value +=
+      (alpha / 2.0) * K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
+  value +=
+      (beta / 2.0) * K_nlm(ni + nj, li + lj - 1, mi + mj, alpha, beta, gamma);
+  value += gamma * K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma);
+
+  // sixth amd seventh lines
+  value += -nj * K_nlm(ni + nj - 2, li + lj, mi + mj, alpha, beta, gamma);
+  value += -lj * K_nlm(ni + nj, li + lj - 2, mi + mj, alpha, beta, gamma);
+  value += (-mj * 2) * K_nlm(ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma);
+
+  // eighth line
+  value += (-alpha * gamma / 8.0) *
+           (K_nlm(ni + nj - 1, li + lj, mi + mj + 1, alpha, beta, gamma) +
+            K_nlm(ni + nj + 1, li + lj, mi + mj - 1, alpha, beta, gamma) -
+            K_nlm(ni + nj - 1, li + lj + 2, mi + mj - 1, alpha, beta, gamma));
+
+  // ninth line
+  value += (-beta * gamma / 8.0) *
+           (K_nlm(ni + nj, li + lj - 1, mi + mj + 1, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj + 1, mi + mj - 1, alpha, beta, gamma) -
+            K_nlm(ni + nj + 2, li + lj - 1, mi + mj - 1, alpha, beta, gamma));
+
+  // tenth line
+  value += (nj * gamma / 4.0) *
+           (K_nlm(ni + nj - 2, li + lj, mi + mj + 1, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma) -
+            K_nlm(ni + nj - 2, lj + lj + 2, mi + mj - 1, alpha, beta, gamma));
+
+  // eleventh line
+  value += (mj * alpha / 4.0) *
+           (K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma) +
+            K_nlm(ni + nj + 1, li + lj, mi + mj - 2, alpha, beta, gamma) -
+            K_nlm(ni + nj - 1, li + lj + 2, mi + mj - 2, alpha, beta, gamma));
+
+  // twelfth line
+  value += (-nj * mj / 2.0) *
+           (K_nlm(ni + nj - 2, li + lj, mi + mj, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma) -
+            K_nlm(ni + nj - 2, li + lj + 2, mi + mj - 2, alpha, beta, gamma));
+
+  // thirteenth line
+  value += (lj * gamma / 4.0) *
+           (K_nlm(ni + nj, li + lj - 2, mi + mj + 1, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma) -
+            K_nlm(ni + nj + 2, li + lj - 2, mi + mj - 1, alpha, beta, gamma));
+
+  // fourteenth line
+  value += (mj * beta / 4.0) *
+           (K_nlm(ni + nj, li + lj - 1, mi + mj, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj + 1, mi + mj - 2, alpha, beta, gamma) -
+            K_nlm(ni + nj + 2, li + lj - 1, mi + mj - 1, alpha, beta, gamma));
+
+  // last (fifteenth) line
+  value += (-lj * mj / 2.0) *
+           (K_nlm(ni + nj, li + lj - 2, mi + mj, alpha, beta, gamma) +
+            K_nlm(ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma) -
+            K_nlm(ni + nj + 2, li + lj - 2, mi + mj - 2, alpha, beta, gamma));
+
+  return value;
 }
