@@ -31,17 +31,25 @@ double eval_S(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
 
 /// Evaluates nuclear attaction V_ij(ne) [Equation 41]
 double eval_V_nuc(double Z, int ni, int li, int mi, int nj, int lj, int mj,
-                     double alpha, double beta, double gamma);
+                  double alpha, double beta, double gamma);
 
 /// Evaluates electron-electron repulsion V_ij(ee) [Equation 43]
-double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj,
-                     double alpha, double beta, double gamma);
+double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+                   double beta, double gamma);
 
 /// Evaluates kinetic energy T_ij [Equation 45]
 double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma);
 
-/// Evaluates overlap matrix S
+/// evaluates terms in T expression, returns zero if pre-factor is zero
+/// otherwise returns pre-factor * integral
+double eval_T_terms(double pre_fac, int n, int l, int m, double alpha,
+                    double beta, double gamma);
+
+/// Computes overlap matrix S
 Eigen::MatrixXd compute_overlap(const BasisFn &basis);
+
+/// Computes Hamiltonian matrix H
+Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, const double Z);
 
 #endif // HYLLERAAS_HELPER_FUNCTIONS_H
