@@ -25,11 +25,11 @@ double eval_S(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma);
 
 /// Evaluates nuclear attaction V_ij(ne) [Equation 41]
-double eval_nuc_attr(double Z, int ni, int li, int mi, int nj, int lj, int mj,
+double eval_V_nuc(double Z, int ni, int li, int mi, int nj, int lj, int mj,
                      double alpha, double beta, double gamma);
 
 /// Evaluates electron-electron repulsion V_ij(ee) [Equation 43]
-double eval_elec_rep(int ni, int li, int mi, int nj, int lj, int mj,
+double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj,
                      double alpha, double beta, double gamma);
 
 /// Evaluates kinetic energy T_ij [Equation 45]

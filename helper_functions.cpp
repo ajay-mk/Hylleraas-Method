@@ -26,6 +26,7 @@ int binomial_coeff(const int n, const int k) {
 
 double K_nlm(const int n, const int l, const int m, const double alpha,
              const double beta, const double gamma) {
+  assert(n >= 0 && l >= 0 && m >= 0);
 
   auto pre_fac = 16 * pow(M_PI, 2) * factorial(n + 1) * factorial(l + 1) *
                  factorial(m + 1);
@@ -54,10 +55,11 @@ double eval_S(const int ni, const int li, const int mi, const int nj,
   return K_nlm(ni + nj, li + lj, mi + mj, alpha, beta, gamma);
 }
 
-double eval_nuc_attr(const double Z, const int ni, const int li, const int mi,
+double eval_V_nuc(const double Z, const int ni, const int li, const int mi,
                      const int nj, const int lj, const int mj,
                      const double alpha, const double beta,
                      const double gamma) {
+  assert(Z > 0);
   // bra and ket have the same exponential parameters alpha, beta and gamma
   // term 1
   const auto t1 = K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
@@ -67,7 +69,7 @@ double eval_nuc_attr(const double Z, const int ni, const int li, const int mi,
   return (-Z * (t1 + t2));
 }
 
-double eval_elec_rep(const int ni, const int li, const int mi, const int nj,
+double eval_V_elec(const int ni, const int li, const int mi, const int nj,
                      const int lj, const int mj, const double alpha,
                      const double beta, const double gamma) {
   // bra and ket have the same exponential parameters alpha, beta and gamma
