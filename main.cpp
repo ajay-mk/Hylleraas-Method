@@ -14,12 +14,15 @@ int main(int argc, char *argv[]) {
   std::cout << std::setprecision(10);
   std::cout << "Hylleraas method for correlation energy\n" << std::endl;
 
-  BasisFn test_basis = {{{0, 0, 0}, {1.6875, 1.6875, 0.0}}}; // see typedef
+  BasisFn single_element_bs = {{{0, 0, 0}, {1.6875, 1.6875, 0.0}}};
 
-  std::cout << "Overlap using single element basis: "
-            << compute_overlap(test_basis) << std::endl;
-  std::cout << "Hamiltonian using single element basis: "
-            << compute_hamiltonian(test_basis, 2) << std::endl;
+  auto S_00 = compute_overlap(single_element_bs);
+  auto H_00 = compute_hamiltonian(single_element_bs, 2);
+
+  std::cout << "Overlap using single element basis: " << S_00 << std::endl;
+  std::cout << "Hamiltonian using single element basis: " << H_00 << std::endl;
+  std::cout << "Energy using single element basis: " << H_00(0) / S_00(0)
+            << std::endl;
 
   return 0;
 }
