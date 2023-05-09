@@ -27,9 +27,9 @@ double K_nlm(const int n, const int l, const int m, const double alpha,
                  factorial(m + 1);
 
   double value = 0.0;
-  for (std::size_t a = 0; a != n + 2; ++a) {
-    for (std::size_t b = 0; b != l + 2; ++b) {
-      for (std::size_t c = 0; c != m + 2; ++c) {
+  for (std::size_t a = 0; a <= n + 1; ++a) {
+    for (std::size_t b = 0; b <= l + 1; ++b) {
+      for (std::size_t c = 0; c <= m + 1; ++c) {
         value += binomial_coeff(l + 1 - b + a, a) *
                  binomial_coeff(m + 1 - c + b, b) *
                  binomial_coeff(n + 1 - a + c, c) /
@@ -53,7 +53,8 @@ double eval_S(const int ni, const int li, const int mi, const int nj,
 double eval_V_nuc(const double Z, const int ni, const int li, const int mi,
                   const int nj, const int lj, const int mj, const double alpha,
                   const double beta, const double gamma) {
-  assert(Z > 0);
+  assert(Z > 0); // non-negative nuclear charge
+
   // bra and ket have the same exponential parameters alpha, beta and gamma
   // term 1
   const auto t1 = K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
@@ -185,12 +186,12 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
 }
 
 Eigen::MatrixXd compute_overlap(const BasisFn &basis) {
-  const int n = basis.size();
+  const std::size_t n = basis.size();
   auto result = Eigen::MatrixXd(n, n);
   result.fill(0.0);
 
-  for (auto i = 0; i < n; ++i) {
-    for (auto j = 0; j < n; ++j) {
+  for (std::size_t i = 0; i != n; ++i) {
+    for (std::size_t j = 0; j != n; ++j) {
       // fetch quantum numbers from basis
       auto qn_i = basis[i].first;
       auto qn_j = basis[j].first;
@@ -204,12 +205,12 @@ Eigen::MatrixXd compute_overlap(const BasisFn &basis) {
 }
 
 Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, const double Z) {
-  const int n = basis.size();
+  const std::size_t n = basis.size();
   auto result = Eigen::MatrixXd(n, n);
   result.fill(0.0);
 
-  for (auto i = 0; i < n; ++i) {
-    for (auto j = 0; j < n; ++j) {
+  for (std::size_t i = 0; i != n; ++i) {
+    for (std::size_t j = 0; j != n; ++j) {
       // fetch quantum numbers from basis
       auto qn_i = basis[i].first;
       auto qn_j = basis[j].first;
@@ -243,14 +244,14 @@ hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z) {
 }
 
 BasisFn construct_basis(const int N, const double alpha, const double gamma) {
-  const auto N_ = N + 1;
   BasisFn basis;
-  for (auto n = 0; n != N_; ++n) {
-    for (auto l = 0; l != N_ - n; ++l) {
-      for (auto m = 0; m != N_ - n - l; ++m) {
-        if (n + l + m <= N_) {
-          basis.emplace_back(std::vector<int>{n, l, m},
-                             std::vector<double>{alpha, alpha, gamma});
+  for (int n = 0; n <= N; ++n) {
+    for (int l = 0; l <= N - n; ++l) {
+      for (int m = 0; m <= N - n - l; ++m) {
+        if (n + l + m <= N) {
+          std::vector<int> qnos = {n,l,m};
+          std::vector<double> exps = {alpha, alpha, gamma}; // alpha = beta
+          basis.push_back(std::pair(qnos, exps));
         }
       }
     }
@@ -258,10 +259,10 @@ BasisFn construct_basis(const int N, const double alpha, const double gamma) {
   return basis;
 }
 
-hylleraas_results do_hylleraas(const double Z, const int N, const double alpha,
-                               const double gamma) {
+hylleraas_results do_hylleraas(const int N, const double alpha,
+                               const double gamma, const double Z) {
   // construct basis
-  auto basis = construct_basis(N, alpha, gamma);
+  const auto basis = construct_basis(N, alpha, gamma);
   hylleraas_results results;
   // compute S and H
   results.S = compute_overlap(basis);

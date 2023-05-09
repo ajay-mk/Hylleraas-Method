@@ -36,7 +36,29 @@ int main(int argc, char *argv[]) {
             << results_3elem.H << std::endl;
 
   std::cout << "\nOrbital energies using three element basis: \n"
-            << results_3elem.evals << std::endl;
+            << results_3elem.evals.transpose()
+            << std::endl; // transpose only for pretty printing
+
+  std::cout << "\nGround state energy using three element basis: "
+            << results_3elem.evals(0) << " Eh" << std::endl;
+
+  // Calculation of ground state energy of Helium atom
+  std::cout << "\nCalculation of ground state energy of Helium atom\n";
+  // vary N from 0 to 15
+
+  std::cout << "N"
+            << "\t"
+            << "Energy (Eh)" << std::endl;
+  for (auto n = 0; n <= 6; ++n) {
+    // construct basis with alpha = beta = 1.8, gamma = 0;
+    // set Z = 2 for Helium atom
+
+    std::cout << "Basis Size: " << construct_basis(n, 1.8, 0).size()
+              << std::endl;
+    auto result = do_hylleraas(n, 1.8, 0.0, 2.0);
+
+    std::cout << n << "\t" << result.evals(0) << std::endl;
+  }
 
   return 0;
 }

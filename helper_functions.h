@@ -68,6 +68,6 @@ BasisFn construct_basis(int N, double alpha, double gamma);
 
 /// Solves the secular equation, more general
 /// constructs basis based on N, alpha and gamma
-hylleraas_results do_hylleraas(double Z, int N, double alpha, double gamma);
+hylleraas_results do_hylleraas(int N, double alpha, double gamma, double Z);
 
 #endif // HYLLERAAS_HELPER_FUNCTIONS_H
