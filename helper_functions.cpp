@@ -115,7 +115,7 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
   value += eval_T_terms(-nj, ni + nj - 2, li + lj, mi + mj, alpha, beta, gamma);
   value += eval_T_terms(-lj, ni + nj, li + lj - 2, mi + mj, alpha, beta, gamma);
   value +=
-      eval_T_terms(-mj * 2, ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma);
+      eval_T_terms(-2 * mj, ni + nj, li + lj, mi + mj - 2, alpha, beta, gamma);
 
   // eighth line
   value += eval_T_terms(-alpha * gamma / 8.0, ni + nj - 1, li + lj, mi + mj + 1,
@@ -170,7 +170,7 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
                         beta, gamma) +
            eval_T_terms(mj * beta / 4.0, ni + nj, li + lj + 1, mi + mj - 2,
                         alpha, beta, gamma) -
-           eval_T_terms(mj * beta / 4.0, ni + nj + 2, li + lj - 1, mi + mj - 1,
+           eval_T_terms(mj * beta / 4.0, ni + nj + 2, li + lj - 1, mi + mj - 2,
                         alpha, beta, gamma);
 
   // last (fifteenth) line
