@@ -59,7 +59,6 @@ double eval_V_nuc(const double Z, const int ni, const int li, const int mi,
   const auto t1 = K_nlm(ni + nj - 1, li + lj, mi + mj, alpha, beta, gamma);
   // term 2
   const auto t2 = K_nlm(ni + nj, li + lj - 1, mi + mj, alpha, beta, gamma);
-
   return (-Z * (t1 + t2));
 }
 
@@ -72,6 +71,8 @@ double eval_V_elec(const int ni, const int li, const int mi, const int nj,
 
 double eval_T_terms(const double pre_fac, const int n, const int l, const int m,
                     const double alpha, const double beta, const double gamma) {
+  // avoid evaluating the integral if the pre-factor is zero
+  // this avoids the issue with negative values in the factorial function
   if (pre_fac == 0)
     return 0;
   return pre_fac * K_nlm(n, l, m, alpha, beta, gamma);
@@ -242,11 +243,12 @@ hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z) {
 }
 
 BasisFn construct_basis(const int N, const double alpha, const double gamma) {
+  const auto N_ = N + 1;
   BasisFn basis;
-  for (auto n = 0; n != N; ++n) {
-    for (auto l = 0; l != N - n; ++l) {
-      for (auto m = 0; m != N - n - l; ++m) {
-        if (n + l + m <= N) {
+  for (auto n = 0; n != N_; ++n) {
+    for (auto l = 0; l != N_ - n; ++l) {
+      for (auto m = 0; m != N_ - n - l; ++m) {
+        if (n + l + m <= N_) {
           basis.push_back(std::pair{std::vector<int>{n, l, m},
                                     std::vector<double>{alpha, alpha, gamma}});
         }

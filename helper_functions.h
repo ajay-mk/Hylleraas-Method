@@ -27,7 +27,7 @@ struct hylleraas_results {
 /// Computes factorial of a number
 int factorial(int n);
 
-/// Computes binomial coefficient for nCk
+/// Computes binomial coefficient for C(n, k)
 int binomial_coeff(int n, int k);
 
 /// Evaluates the K integral [Equation 33]
@@ -67,6 +67,7 @@ hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z);
 BasisFn construct_basis(int N, double alpha, double gamma);
 
 /// Solves the secular equation, more general
+/// constructs basis based on N, alpha and gamma
 hylleraas_results do_hylleraas(double Z, int N, double alpha, double gamma);
 
 #endif // HYLLERAAS_HELPER_FUNCTIONS_H
