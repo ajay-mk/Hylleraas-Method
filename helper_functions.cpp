@@ -39,8 +39,8 @@ double K_nlm(const int n, const int l, const int m, const double alpha,
       }
     }
   }
-  auto result = pre_fac * value;
-  return result;
+
+  return pre_fac * value;
 }
 
 double eval_S(const int ni, const int li, const int mi, const int nj,
@@ -96,7 +96,7 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
   // third line
   value += eval_T_terms((-nj * (nj - 1) / 2.0), ni + nj - 2, li + lj, mi + mj,
                         alpha, beta, gamma);
-  value += eval_T_terms(-lj * (lj - 1) / 2, ni + nj, li + lj - 2, mi + mj,
+  value += eval_T_terms(-lj * (lj - 1) / 2.0, ni + nj, li + lj - 2, mi + mj,
                         alpha, beta, gamma);
 
   // fourth line
@@ -249,8 +249,8 @@ BasisFn construct_basis(const int N, const double alpha, const double gamma) {
     for (auto l = 0; l != N_ - n; ++l) {
       for (auto m = 0; m != N_ - n - l; ++m) {
         if (n + l + m <= N_) {
-          basis.push_back(std::pair{std::vector<int>{n, l, m},
-                                    std::vector<double>{alpha, alpha, gamma}});
+          basis.emplace_back(std::vector<int>{n, l, m},
+                             std::vector<double>{alpha, alpha, gamma});
         }
       }
     }
@@ -263,6 +263,7 @@ hylleraas_results do_hylleraas(const double Z, const int N, const double alpha,
   // construct basis
   auto basis = construct_basis(N, alpha, gamma);
   hylleraas_results results;
+  // compute S and H
   results.S = compute_overlap(basis);
   results.H = compute_hamiltonian(basis, Z);
 
