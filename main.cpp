@@ -5,10 +5,8 @@
 // Hylleraas Method Implementation Project for CHEM6664, Spring 23
 
 #include "helper_functions.h"
-#include <Eigen/Eigen>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 
 int main(int argc, char *argv[]) {
   std::cout << std::setprecision(12);

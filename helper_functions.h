@@ -3,10 +3,9 @@
 //
 
 #include "Eigen/Eigen"
-#include "Eigen/Eigenvalues"
-#include <cmath>
+#include <boost/math/distributions/binomial.hpp>
+#include <boost/math/special_functions/factorials.hpp>
 #include <iostream>
-#include <vector>
 
 #ifndef HYLLERAAS_HELPER_FUNCTIONS_H
 #define HYLLERAAS_HELPER_FUNCTIONS_H
@@ -25,11 +24,11 @@ struct hylleraas_results {
 };
 
 // Function Declarations
-/// Computes factorial of a number
-std::int64_t factorial(int n);
+/// Computes compute_factorial of a number
+std::int64_t compute_factorial(int n);
 
 /// Computes binomial coefficient for C(n, k)
-std::int64_t binomial_coeff(int n, int k);
+std::int64_t compute_binomial_coeff(int n, int k);
 
 /// Evaluates the K integral [Equation 33]
 double K_nlm(int n, int l, int m, double alpha, double beta, double gamma);

@@ -6,33 +6,37 @@
 
 // Function Definitions
 
-std::int64_t factorial(const int n) {
+std::int64_t compute_factorial(const int n) {
   assert(n >= 0);
-  return (n == 1 || n == 0) ? 1 : n * factorial(n - 1);
+  return (n == 1 || n == 0) ? 1 : n * compute_factorial(n - 1);
 }
 
-std::int64_t binomial_coeff(const int n, const int k) {
+std::int64_t compute_binomial_coeff(const int n, const int k) {
   if (k > n)
     return 0;
   if (k == 0 || k == n)
     return 1;
-  return binomial_coeff(n - 1, k - 1) + binomial_coeff(n - 1, k);
+  return compute_binomial_coeff(n - 1, k - 1) +
+         compute_binomial_coeff(n - 1, k);
 }
 
 double K_nlm(const int n, const int l, const int m, const double alpha,
              const double beta, const double gamma) {
+  using namespace boost::math;
   // in this project, alpha = beta and gamma = 0, but trying to keep it general
 
-  auto pre_fac = 16 * pow(M_PI, 2) * factorial(n + 1) * factorial(l + 1) *
-                 factorial(m + 1);
+  auto pre_fac = 16 * pow(M_PI, 2) * factorial<double>(n + 1) *
+                 factorial<double>(l + 1) * factorial<double>(m + 1);
+  unsigned long a = 2;
+  unsigned long b = 3;
 
   double value = 0.0;
-  for (std::size_t a = 0; a <= n + 1; ++a) {
-    for (std::size_t b = 0; b <= l + 1; ++b) {
-      for (std::size_t c = 0; c <= m + 1; ++c) {
-        value += binomial_coeff(l + 1 - b + a, a) *
-                 binomial_coeff(m + 1 - c + b, b) *
-                 binomial_coeff(n + 1 - a + c, c) /
+  for (auto a = 0; a <= n + 1; ++a) {
+    for (auto b = 0; b <= l + 1; ++b) {
+      for (auto c = 0; c <= m + 1; ++c) {
+        value += binomial_coefficient<double>(l + 1 - b + a, a) *
+                 binomial_coefficient<double>(m + 1 - c + b, b) *
+                 binomial_coefficient<double>(n + 1 - a + c, c) /
                  (pow(alpha + beta, l - b + a + 2) *
                   pow(alpha + gamma, n - a + c + 2) *
                   pow(beta + gamma, m - c + b + 2));
@@ -249,7 +253,7 @@ BasisFn construct_basis(const int N, const double alpha, const double gamma) {
     for (int l = 0; l <= N - n; ++l) {
       for (int m = 0; m <= N - n - l; ++m) {
         if (n + l + m <= N) {
-          std::vector<int> qnos = {n,l,m};
+          std::vector<int> qnos = {n, l, m};
           std::vector<double> exps = {alpha, alpha, gamma}; // alpha = beta
           basis.push_back(std::pair(qnos, exps));
         }
