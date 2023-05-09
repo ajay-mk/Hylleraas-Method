@@ -3,6 +3,7 @@
 //
 
 #include "Eigen/Eigen"
+#include "Eigen/Eigenvalues"
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -25,10 +26,10 @@ struct hylleraas_results {
 
 // Function Declarations
 /// Computes factorial of a number
-int factorial(int n);
+std::int64_t factorial(int n);
 
 /// Computes binomial coefficient for C(n, k)
-int binomial_coeff(int n, int k);
+std::int64_t binomial_coeff(int n, int k);
 
 /// Evaluates the K integral [Equation 33]
 double K_nlm(int n, int l, int m, double alpha, double beta, double gamma);

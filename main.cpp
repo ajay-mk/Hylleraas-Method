@@ -11,7 +11,7 @@
 #include <vector>
 
 int main(int argc, char *argv[]) {
-  std::cout << std::setprecision(10);
+  std::cout << std::setprecision(12);
   std::cout << "Hylleraas Method\n" << std::endl;
 
   BasisFn bs_single = {{{0, 0, 0}, {1.6875, 1.6875, 0.0}}};
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   std::cout << "N"
             << "\t"
             << "Energy (Eh)" << std::endl;
-  for (auto n = 0; n <= 6; ++n) {
+  for (auto n = 0; n <= 10; ++n) {
     // construct basis with alpha = beta = 1.8, gamma = 0;
     // set Z = 2 for Helium atom
 

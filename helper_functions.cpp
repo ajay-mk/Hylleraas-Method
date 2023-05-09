@@ -6,12 +6,12 @@
 
 // Function Definitions
 
-int factorial(const int n) {
+std::int64_t factorial(const int n) {
   assert(n >= 0);
   return (n == 1 || n == 0) ? 1 : n * factorial(n - 1);
 }
 
-int binomial_coeff(const int n, const int k) {
+std::int64_t binomial_coeff(const int n, const int k) {
   if (k > n)
     return 0;
   if (k == 0 || k == n)
@@ -270,7 +270,8 @@ hylleraas_results do_hylleraas(const int N, const double alpha,
 
   Eigen::GeneralizedSelfAdjointEigenSolver<Eigen::MatrixXd> solver(results.H,
                                                                    results.S);
-  results.evals = solver.eigenvalues();
-  results.evecs = solver.eigenvectors();
+
+  results.evals = solver.eigenvalues().real();
+  results.evecs = solver.eigenvectors().real();
   return results;
 }
