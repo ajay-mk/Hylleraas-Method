@@ -21,8 +21,25 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Overlap using single element basis: " << S_00 << std::endl;
   std::cout << "Hamiltonian using single element basis: " << H_00 << std::endl;
+
   std::cout << "Energy using single element basis: " << H_00(0) / S_00(0)
             << std::endl;
+
+  BasisFn three_element_bs = {
+      {{0,0,0}, {1.8,1.8,0.0}},
+      {{1,1,0}, {1.8,1.8,0.0}},
+      {{0,0,1}, {1.8, 1.8, 0.0}}
+  };
+
+  auto three_element_results = do_hylleraas_simple(three_element_bs, 2);
+  std::cout << "\nOverlap using three element basis: \n" << three_element_results.S
+            << std::endl;
+  std::cout << "\nHamiltonian using three element basis: \n"
+            << three_element_results.H << std::endl;
+
+  std::cout << "\nOrbital energies using three element basis: \n"
+            << three_element_results.evals << std::endl;
+
 
   return 0;
 }

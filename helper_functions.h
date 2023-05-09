@@ -15,6 +15,14 @@ typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
 // example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
 // general: {{{n,l,m},{alpha/2, beta/2, gamma/2}}}
 
+// Structs
+struct hylleraas_results {
+  Eigen::MatrixXd evals;
+  Eigen::MatrixXd evecs;
+  Eigen::MatrixXd H;
+  Eigen::MatrixXd S;
+};
+
 // Function Declarations
 /// Computes factorial of a number
 int factorial(int n);
@@ -50,6 +58,15 @@ double eval_T_terms(double pre_fac, int n, int l, int m, double alpha,
 Eigen::MatrixXd compute_overlap(const BasisFn &basis);
 
 /// Computes Hamiltonian matrix H
-Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, const double Z);
+Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, double Z);
+
+/// Solves the secular equations
+hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z);
+
+/// Constructs a basis based on parameters alpha, beta and N
+BasisFn construct_basis(int N, double alpha, double gamma);
+
+/// Solves the secular equation, more general
+hylleraas_results do_hylleraas(double Z, int N, double alpha, double gamma);
 
 #endif // HYLLERAAS_HELPER_FUNCTIONS_H

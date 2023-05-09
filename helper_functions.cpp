@@ -99,7 +99,7 @@ double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
                         alpha, beta, gamma);
 
   // fourth line
-  value += eval_T_terms(mj * (mj - 1), ni + nj, li + lj, mi + mj - 2, alpha,
+  value += eval_T_terms(-mj * (mj - 1), ni + nj, li + lj, mi + mj - 2, alpha,
                         beta, gamma);
 
   // fifth line
@@ -226,4 +226,47 @@ Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, const double Z) {
     }
   }
   return result;
+}
+
+hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z) {
+  // compute S and H
+  hylleraas_results results;
+  results.S = compute_overlap(basis);
+  results.H = compute_hamiltonian(basis, Z);
+
+  Eigen::GeneralizedSelfAdjointEigenSolver<Eigen::MatrixXd> solver(results.H,
+                                                                   results.S);
+  results.evals = solver.eigenvalues();
+  results.evecs = solver.eigenvectors();
+  return results;
+}
+
+BasisFn construct_basis(const int N, const double alpha, const double gamma) {
+  BasisFn basis;
+  for (auto n = 0; n != N; ++n) {
+    for (auto l = 0; l != N - n; ++l) {
+      for (auto m = 0; m != N - n - l; ++m) {
+        if (n + l + m <= N) {
+          basis.push_back(std::pair{std::vector<int>{n, l, m},
+                                    std::vector<double>{alpha, alpha, gamma}});
+        }
+      }
+    }
+  }
+  return basis;
+}
+
+hylleraas_results do_hylleraas(const double Z, const int N, const double alpha,
+                               const double gamma) {
+  // construct basis
+  auto basis = construct_basis(N, alpha, gamma);
+  hylleraas_results results;
+  results.S = compute_overlap(basis);
+  results.H = compute_hamiltonian(basis, Z);
+
+  Eigen::GeneralizedSelfAdjointEigenSolver<Eigen::MatrixXd> solver(results.H,
+                                                                   results.S);
+  results.evals = solver.eigenvalues();
+  results.evecs = solver.eigenvectors();
+  return results;
 }
