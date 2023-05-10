@@ -6,12 +6,12 @@
 
 // Function Definitions
 
-std::int64_t compute_factorial(const int n) {
+int_type compute_factorial(const int n) {
   assert(n >= 0);
   return (n == 1 || n == 0) ? 1 : n * compute_factorial(n - 1);
 }
 
-std::int64_t compute_binomial_coeff(const int n, const int k) {
+int_type compute_binomial_coeff(const int n, const int k) {
   if (k > n)
     return 0;
   if (k == 0 || k == n)
@@ -20,42 +20,57 @@ std::int64_t compute_binomial_coeff(const int n, const int k) {
          compute_binomial_coeff(n - 1, k);
 }
 
-long double K_nlm(const int n, const int l, const int m, const double alpha,
-             const double beta, const double gamma) {
+float_type K_nlm(const int n, const int l, const int m, const double alpha,
+                 const double beta, const double gamma) {
   using namespace boost::math;
   // in this project, alpha = beta and gamma = 0, but trying to keep it general
 
-  auto pre_fac = 16.0 * pow(M_PI, 2) * factorial<long double>(n + 1) *
-                 factorial<long double>(l + 1) * factorial<long double>(m + 1);
+  auto pre_fac = 16.0 * pow(M_PI, 2) * factorial<float_type>(n + 1) *
+                 factorial<float_type>(l + 1) * factorial<float_type>(m + 1);
+  //  auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial(n + 1) *
+  //                 compute_factorial(l + 1) * compute_factorial(m + 1);
 
-  long double value = 0.0;
+  float_type value = 0.0;
   for (auto a = 0; a <= n + 1; ++a) {
     for (auto b = 0; b <= l + 1; ++b) {
       for (auto c = 0; c <= m + 1; ++c) {
-        value += binomial_coefficient<long double>(l + 1 - b + a, a) *
-                 binomial_coefficient<long double>(m + 1 - c + b, b) *
-                 binomial_coefficient<long double>(n + 1 - a + c, c) /
+        value += binomial_coefficient<float_type>(l + 1 - b + a, a) *
+                 binomial_coefficient<float_type>(m + 1 - c + b, b) *
+                 binomial_coefficient<float_type>(n + 1 - a + c, c) /
                  (pow(alpha + beta, l - b + a + 2) *
                   pow(alpha + gamma, n - a + c + 2) *
                   pow(beta + gamma, m - c + b + 2));
       }
     }
   }
-//  if (pre_fac * value > 1e12)
-//    std::cout << "Value: " << pre_fac * value << std::endl;
+  //  for (auto a = 0; a <= n + 1; ++a) {
+  //    for (auto b = 0; b <= l + 1; ++b) {
+  //      for (auto c = 0; c <= m + 1; ++c) {
+  //        value += compute_binomial_coeff(l + 1 - b + a, a) *
+  //                 compute_binomial_coeff(m + 1 - c + b, b) *
+  //                 compute_binomial_coeff(n + 1 - a + c, c) /
+  //                 (pow(alpha + beta, l - b + a + 2) *
+  //                  pow(alpha + gamma, n - a + c + 2) *
+  //                  pow(beta + gamma, m - c + b + 2));
+  //      }
+  //    }
+  //  }
+  //  if (pre_fac * value > 1e12)
+  //    std::cout << "Value: " << pre_fac * value << std::endl;
   return pre_fac * value;
 }
 
-long double eval_S(const int ni, const int li, const int mi, const int nj,
-              const int lj, const int mj, const double alpha, const double beta,
-              const double gamma) {
+float_type eval_S(const int ni, const int li, const int mi, const int nj,
+                  const int lj, const int mj, const double alpha,
+                  const double beta, const double gamma) {
   // bra and ket have the same exponential parameters alpha, beta and gamma
   return K_nlm(ni + nj, li + lj, mi + mj, alpha, beta, gamma);
 }
 
-long double eval_V_nuc(const double Z, const int ni, const int li, const int mi,
-                  const int nj, const int lj, const int mj, const double alpha,
-                  const double beta, const double gamma) {
+float_type eval_V_nuc(const double Z, const int ni, const int li, const int mi,
+                      const int nj, const int lj, const int mj,
+                      const double alpha, const double beta,
+                      const double gamma) {
   assert(Z > 0); // non-negative nuclear charge
 
   // bra and ket have the same exponential parameters alpha, beta and gamma
@@ -66,15 +81,16 @@ long double eval_V_nuc(const double Z, const int ni, const int li, const int mi,
   return (-Z * (t1 + t2));
 }
 
-long double eval_V_elec(const int ni, const int li, const int mi, const int nj,
-                   const int lj, const int mj, const double alpha,
-                   const double beta, const double gamma) {
+float_type eval_V_elec(const int ni, const int li, const int mi, const int nj,
+                       const int lj, const int mj, const double alpha,
+                       const double beta, const double gamma) {
   // bra and ket have the same exponential parameters alpha, beta and gamma
   return K_nlm(ni + nj, li + lj, mi + mj - 1, alpha, beta, gamma);
 }
 
-long double eval_T_terms(const double pre_fac, const int n, const int l, const int m,
-                    const double alpha, const double beta, const double gamma) {
+float_type eval_T_terms(const double pre_fac, const int n, const int l,
+                        const int m, const double alpha, const double beta,
+                        const double gamma) {
   // avoid evaluating the integral if the pre-factor is zero
   // this avoids the issue with negative values in the factorial function
   if (pre_fac == 0)
@@ -82,9 +98,9 @@ long double eval_T_terms(const double pre_fac, const int n, const int l, const i
   return pre_fac * K_nlm(n, l, m, alpha, beta, gamma);
 }
 
-long double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
-              double beta, double gamma) {
-  long double value = 0.0;
+float_type eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+                  double beta, double gamma) {
+  float_type value = 0.0;
   // first line
   value += (-1.0 / 8.0) * (pow(alpha, 2) + pow(beta, 2) + 2 * pow(gamma, 2)) *
            eval_S(ni, li, mi, nj, lj, mj, alpha, beta, gamma);
@@ -239,8 +255,7 @@ hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z) {
   results.S = compute_overlap(basis);
   results.H = compute_hamiltonian(basis, Z);
 
-  Eigen::GeneralizedSelfAdjointEigenSolver<Matrix> solver(results.H,
-                                                                   results.S);
+  Eigen::GeneralizedSelfAdjointEigenSolver<Matrix> solver(results.H, results.S);
   results.evals = solver.eigenvalues();
   results.evecs = solver.eigenvectors();
   return results;
@@ -271,8 +286,7 @@ hylleraas_results do_hylleraas(const int N, const double alpha,
   results.S = compute_overlap(basis);
   results.H = compute_hamiltonian(basis, Z);
 
-  Eigen::GeneralizedSelfAdjointEigenSolver<Matrix> solver(results.H,
-                                                                   results.S);
+  Eigen::GeneralizedSelfAdjointEigenSolver<Matrix> solver(results.H, results.S);
 
   results.evals = solver.eigenvalues().real();
   results.evecs = solver.eigenvectors().real();

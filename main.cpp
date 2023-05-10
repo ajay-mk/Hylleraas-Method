@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   // vary N from 0 to 15
 
   std::cout << "N\tEnergy (Eh)" << std::endl;
-  for (auto n = 0; n <= 15; ++n) {
+  for (auto n = 0; n <= 12; ++n) {
     // construct basis with alpha = beta = 1.8, gamma = 0;
     // set Z = 2 for Helium atom
 
