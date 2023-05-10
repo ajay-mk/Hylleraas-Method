@@ -15,12 +15,16 @@ typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
 // example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
 // general: {{{n,l,m},{alpha/2, beta/2, gamma/2}}}
 
+typedef Eigen::Matrix<long double, Eigen::Dynamic,
+                      Eigen::Dynamic,
+                      Eigen::RowMajor> Matrix;
+
 // Structs
 struct hylleraas_results {
-  Eigen::MatrixXd evals;
-  Eigen::MatrixXd evecs;
-  Eigen::MatrixXd H;
-  Eigen::MatrixXd S;
+  Matrix evals;
+  Matrix evecs;
+  Matrix H;
+  Matrix S;
 };
 
 // Function Declarations
@@ -31,34 +35,34 @@ std::int64_t compute_factorial(int n);
 std::int64_t compute_binomial_coeff(int n, int k);
 
 /// Evaluates the K integral [Equation 33]
-double K_nlm(int n, int l, int m, double alpha, double beta, double gamma);
+long double K_nlm(int n, int l, int m, double alpha, double beta, double gamma);
 
 /// Evaluates overlap S_ij [Equation 39]
-double eval_S(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+long double eval_S(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma);
 
 /// Evaluates nuclear attaction V_ij(ne) [Equation 41]
-double eval_V_nuc(double Z, int ni, int li, int mi, int nj, int lj, int mj,
+long double eval_V_nuc(double Z, int ni, int li, int mi, int nj, int lj, int mj,
                   double alpha, double beta, double gamma);
 
 /// Evaluates electron-electron repulsion V_ij(ee) [Equation 43]
-double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+long double eval_V_elec(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
                    double beta, double gamma);
 
 /// Evaluates kinetic energy T_ij [Equation 45]
-double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
+long double eval_T(int ni, int li, int mi, int nj, int lj, int mj, double alpha,
               double beta, double gamma);
 
 /// evaluates terms in T expression, returns zero if pre-factor is zero
 /// otherwise returns pre-factor * integral
-double eval_T_terms(double pre_fac, int n, int l, int m, double alpha,
+long double eval_T_terms(double pre_fac, int n, int l, int m, double alpha,
                     double beta, double gamma);
 
 /// Computes overlap matrix S
-Eigen::MatrixXd compute_overlap(const BasisFn &basis);
+Matrix compute_overlap(const BasisFn &basis);
 
 /// Computes Hamiltonian matrix H
-Eigen::MatrixXd compute_hamiltonian(const BasisFn &basis, double Z);
+Matrix compute_hamiltonian(const BasisFn &basis, double Z);
 
 /// Solves the secular equations
 hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z);

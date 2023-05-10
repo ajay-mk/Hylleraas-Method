@@ -9,7 +9,7 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-  std::cout << std::setprecision(12);
+  std::cout << std::setprecision(16);
   std::cout << "Hylleraas Method\n" << std::endl;
 
   BasisFn bs_single = {{{0, 0, 0}, {1.6875, 1.6875, 0.0}}};
@@ -44,15 +44,11 @@ int main(int argc, char *argv[]) {
   std::cout << "\nCalculation of ground state energy of Helium atom\n";
   // vary N from 0 to 15
 
-  std::cout << "N"
-            << "\t"
-            << "Energy (Eh)" << std::endl;
-  for (auto n = 0; n <= 10; ++n) {
+  std::cout << "N\tEnergy (Eh)" << std::endl;
+  for (auto n = 0; n <= 15; ++n) {
     // construct basis with alpha = beta = 1.8, gamma = 0;
     // set Z = 2 for Helium atom
 
-    std::cout << "Basis Size: " << construct_basis(n, 1.8, 0).size()
-              << std::endl;
     auto result = do_hylleraas(n, 1.8, 0.0, 2.0);
 
     std::cout << n << "\t" << result.evals(0) << std::endl;
