@@ -14,20 +14,22 @@
 #define HYLLERAAS_HELPER_FUNCTIONS_H
 
 // TypeDefs
-typedef boost::multiprecision::number<boost::multiprecision::cpp_dec_float<20>>
-    float_type;
-typedef boost::multiprecision::cpp_int int_type;
+// typedef
+// boost::multiprecision::number<boost::multiprecision::cpp_dec_float<20>>
+//    float_type;
+// typedef boost::multiprecision::cpp_int int_type;
 
 /// typedefs without using boost::multiprecision
-//typedef double float_type;
-//typedef long long int int_type;
+typedef double float_type;
+typedef long long int int_type;
 
 typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
 // example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
 // general: {{{n,l,m},{alpha/2, beta/2, gamma/2}}}
 
 typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic,
-                      Eigen::RowMajor> Matrix;
+                      Eigen::RowMajor>
+    Matrix;
 
 // Structs
 struct hylleraas_results {
@@ -75,7 +77,7 @@ Matrix compute_overlap(const BasisFn &basis);
 Matrix compute_hamiltonian(const BasisFn &basis, double Z);
 
 /// Solves the secular equations
-hylleraas_results do_hylleraas_simple(const BasisFn &basis, const double Z);
+hylleraas_results do_hylleraas_simple(const BasisFn &basis, double Z);
 
 /// Constructs a basis based on parameters alpha, beta and N
 BasisFn construct_basis(int N, double alpha, double gamma);

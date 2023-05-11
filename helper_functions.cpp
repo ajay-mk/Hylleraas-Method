@@ -25,8 +25,9 @@ float_type K_nlm(const int n, const int l, const int m, const double alpha,
   using namespace boost::math;
   // in this project, alpha = beta and gamma = 0, but trying to keep it general
 
-  auto pre_fac = 16.0 * pow(M_PI, 2) * factorial<float_type>(n + 1) *
-                 factorial<float_type>(l + 1) * factorial<float_type>(m + 1);
+  auto pre_fac = 16.0 * pow(boost::math::constants::pi<double>(), 2) *
+                 factorial<float_type>(n + 1) * factorial<float_type>(l + 1) *
+                 factorial<float_type>(m + 1);
   //  auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial(n + 1) *
   //                 compute_factorial(l + 1) * compute_factorial(m + 1);
 
@@ -55,8 +56,7 @@ float_type K_nlm(const int n, const int l, const int m, const double alpha,
   //      }
   //    }
   //  }
-  //  if (pre_fac * value > 1e12)
-  //    std::cout << "Value: " << pre_fac * value << std::endl;
+
   return pre_fac * value;
 }
 
