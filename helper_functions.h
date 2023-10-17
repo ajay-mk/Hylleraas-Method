@@ -16,6 +16,10 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #endif
 
+#ifdef USE_OPENMP
+#include <omp.h>
+#endif
+
 #ifdef USE_MULTIPRECISION
 using namespace boost::multiprecision;
 using float_type = number<boost::multiprecision::cpp_dec_float<20>>;

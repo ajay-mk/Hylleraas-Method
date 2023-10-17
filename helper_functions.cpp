@@ -43,6 +43,9 @@ float_type K_nlm(const int n, const int l, const int m, const double alpha,
                  compute_factorial<float_type>(m + 1);
 
   float_type value = 0.0;
+#ifdef USE_OPENMP
+#pragma omp parallel for reduction(+:value)
+#endif
   for (auto a = 0; a <= n + 1; ++a) {
     for (auto b = 0; b <= l + 1; ++b) {
       for (auto c = 0; c <= m + 1; ++c) {
