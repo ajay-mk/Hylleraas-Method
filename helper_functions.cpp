@@ -6,56 +6,55 @@
 
 // Function Definitions
 
-int_type compute_factorial(const int n) {
+#ifdef USE_MULTIPRECISION
+template <typename T> T compute_factorial(const int n) {
   assert(n >= 0);
-  return (n == 1 || n == 0) ? 1 : n * compute_factorial(n - 1);
+  return boost::math::factorial<float_type>(n);
 }
 
-int_type compute_binomial_coeff(const int n, const int k) {
+template <typename T> T compute_binomial_coeff(const int n, const int k) {
+  if (k > n)
+    return 0;
+  else
+    return boost::math::binomial_coefficient<float_type>(n, k);
+}
+
+#else
+template <typename T> T compute_factorial(const int n) {
+  assert(n >= 0);
+  return (n == 1 || n == 0) ? 1 : n * compute_factorial<T>(n - 1);
+}
+template <typename T> T compute_binomial_coeff(const int n, const int k) {
   if (k > n)
     return 0;
   if (k == 0 || k == n)
     return 1;
-  return compute_binomial_coeff(n - 1, k - 1) +
-         compute_binomial_coeff(n - 1, k);
+  return compute_binomial_coeff<T>(n - 1, k - 1) +
+         compute_binomial_coeff<T>(n - 1, k);
 }
+#endif
 
 float_type K_nlm(const int n, const int l, const int m, const double alpha,
                  const double beta, const double gamma) {
-  using namespace boost::math;
-  // in this project, alpha = beta and gamma = 0, but trying to keep it general
 
-  auto pre_fac = 16.0 * pow(boost::math::constants::pi<double>(), 2) *
-                 factorial<float_type>(n + 1) * factorial<float_type>(l + 1) *
-                 factorial<float_type>(m + 1);
-  //  auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial(n + 1) *
-  //                 compute_factorial(l + 1) * compute_factorial(m + 1);
+  // in this project, alpha = beta and gamma = 0, but trying to keep it general
+  auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial<float_type>(n + 1) *
+                 compute_factorial<float_type>(l + 1) *
+                 compute_factorial<float_type>(m + 1);
 
   float_type value = 0.0;
   for (auto a = 0; a <= n + 1; ++a) {
     for (auto b = 0; b <= l + 1; ++b) {
       for (auto c = 0; c <= m + 1; ++c) {
-        value += binomial_coefficient<float_type>(l + 1 - b + a, a) *
-                 binomial_coefficient<float_type>(m + 1 - c + b, b) *
-                 binomial_coefficient<float_type>(n + 1 - a + c, c) /
+        value += compute_binomial_coeff<float_type>(l + 1 - b + a, a) *
+                 compute_binomial_coeff<float_type>(m + 1 - c + b, b) *
+                 compute_binomial_coeff<float_type>(n + 1 - a + c, c) /
                  (pow(alpha + beta, l - b + a + 2) *
                   pow(alpha + gamma, n - a + c + 2) *
                   pow(beta + gamma, m - c + b + 2));
       }
     }
   }
-  //  for (auto a = 0; a <= n + 1; ++a) {
-  //    for (auto b = 0; b <= l + 1; ++b) {
-  //      for (auto c = 0; c <= m + 1; ++c) {
-  //        value += compute_binomial_coeff(l + 1 - b + a, a) *
-  //                 compute_binomial_coeff(m + 1 - c + b, b) *
-  //                 compute_binomial_coeff(n + 1 - a + c, c) /
-  //                 (pow(alpha + beta, l - b + a + 2) *
-  //                  pow(alpha + gamma, n - a + c + 2) *
-  //                  pow(beta + gamma, m - c + b + 2));
-  //      }
-  //    }
-  //  }
 
   return pre_fac * value;
 }

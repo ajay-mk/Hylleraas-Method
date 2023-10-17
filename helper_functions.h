@@ -43,10 +43,10 @@ struct hylleraas_results {
 
 // Function Declarations
 /// Computes compute_factorial of a number
-int_type compute_factorial(int n);
+template <typename T> T compute_factorial(int n);
 
 /// Computes binomial coefficient for C(n, k)
-int_type compute_binomial_coeff(int n, int k);
+template <typename T> T compute_binomial_coeff(int n, int k);
 
 /// Evaluates the K integral [Equation 33]
 float_type K_nlm(int n, int l, int m, double alpha, double beta, double gamma);
