@@ -2,26 +2,28 @@
 // Created by Ajay Melekamburath on 5/8/23.
 //
 
+#ifndef HYLLERAAS_HELPER_FUNCTIONS_H
+#define HYLLERAAS_HELPER_FUNCTIONS_H
+
 #include "Eigen/Eigen"
+#include <iostream>
+#include <vector>
+
+#ifdef USE_MULTIPRECISION
 #include <boost/math/distributions/binomial.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
+#endif
 
-#include <iostream>
-
-#ifndef HYLLERAAS_HELPER_FUNCTIONS_H
-#define HYLLERAAS_HELPER_FUNCTIONS_H
-
-// TypeDefs
-// typedef
-// boost::multiprecision::number<boost::multiprecision::cpp_dec_float<20>>
-//    float_type;
-// typedef boost::multiprecision::cpp_int int_type;
-
-/// typedefs without using boost::multiprecision
-typedef double float_type;
-typedef long long int int_type;
+#ifdef USE_MULTIPRECISION
+using namespace boost::multiprecision;
+using float_type = number<boost::multiprecision::cpp_dec_float<20>>;
+using int_type = cpp_int;
+#else
+using float_type = double;
+using int_type = long long int;
+#endif
 
 typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
 // example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
