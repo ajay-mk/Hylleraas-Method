@@ -4,8 +4,8 @@ project(Hylleraas)
 set(CMAKE_CXX_STANDARD 17)
 
 # Multiprecision can be turned off or on with the USE_MULTIPRECISION option
-option(ENABLE_MULTIPRECISION "Use multiprecision" ON)
-option(ENABLE_OPENMP "Use OpenMP" ON)
+option(ENABLE_MULTIPRECISION "Use multiprecision" OFF)
+option(ENABLE_OPENMP "Use OpenMP" OFF)
 
 add_executable(Hylleraas main.cpp helper_functions.cpp helper_functions.h)
 
@@ -16,7 +16,7 @@ target_link_libraries(Hylleraas Eigen3::Eigen)
 # OpenMP is optional
 
 if (ENABLE_OPENMP)
-    find_package(OpenMP)
+    find_package(OpenMP REQUIRED)
     if (OpenMP_CXX_FOUND)
         add_definitions(-DUSE_OPENMP)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
