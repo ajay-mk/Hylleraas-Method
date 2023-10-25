@@ -8,6 +8,7 @@
 #include "Eigen/Eigen"
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #ifdef USE_MULTIPRECISION
 #include <boost/math/distributions/binomial.hpp>

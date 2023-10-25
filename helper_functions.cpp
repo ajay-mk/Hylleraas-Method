@@ -34,18 +34,18 @@ template <typename T> T compute_binomial_coeff(const int n, const int k) {
 }
 #endif
 
-float_type K_nlm(const int n, const int l, const int m, const double alpha,
-                 const double beta, const double gamma) {
-
+#ifdef USE_OPENMP
+float_type K_nlm_openmp(const int n, const int l, const int m,
+                        const double alpha, const double beta,
+                        const double gamma) {
   // in this project, alpha = beta and gamma = 0, but trying to keep it general
   auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial<float_type>(n + 1) *
                  compute_factorial<float_type>(l + 1) *
                  compute_factorial<float_type>(m + 1);
-
   float_type value = 0.0;
-#ifdef USE_OPENMP
-#pragma omp parallel for reduction(+:value)
-#endif
+
+#pragma omp parallel for reduction(+ : value)
+
   for (auto a = 0; a <= n + 1; ++a) {
     for (auto b = 0; b <= l + 1; ++b) {
       for (auto c = 0; c <= m + 1; ++c) {
@@ -58,8 +58,48 @@ float_type K_nlm(const int n, const int l, const int m, const double alpha,
       }
     }
   }
-
   return pre_fac * value;
+}
+#endif
+
+float_type K_nlm_parallel(const int n, const int l, const int m,
+                          const double alpha, const double beta,
+                          const double gamma) {
+  // in this project, alpha = beta and gamma = 0, but trying to keep it general
+  auto pre_fac = 16.0 * pow(M_PI, 2) * compute_factorial<float_type>(n + 1) *
+                 compute_factorial<float_type>(l + 1) *
+                 compute_factorial<float_type>(m + 1);
+  std::vector<std::thread> threads;
+  std::vector<float_type> values(n + 2, 0.0);
+  for (auto a = 0; a <= n + 1; ++a) {
+    threads.emplace_back([&, a]() {
+      for (auto b = 0; b <= l + 1; ++b) {
+        for (auto c = 0; c <= m + 1; ++c) {
+          values[a] += compute_binomial_coeff<float_type>(l + 1 - b + a, a) *
+                       compute_binomial_coeff<float_type>(m + 1 - c + b, b) *
+                       compute_binomial_coeff<float_type>(n + 1 - a + c, c) /
+                       (pow(alpha + beta, l - b + a + 2) *
+                        pow(alpha + gamma, n - a + c + 2) *
+                        pow(beta + gamma, m - c + b + 2));
+        }
+      }
+    });
+  }
+  for (auto &thread : threads) {
+    thread.join();
+  }
+  float_type value = std::accumulate(values.begin(), values.end(),
+                                     static_cast<float_type>(0.0));
+  return pre_fac * value;
+}
+
+float_type K_nlm(const int n, const int l, const int m, const double alpha,
+                 const double beta, const double gamma) {
+#ifdef USE_OPENMP
+  return K_nlm_openmp(n, l, m, alpha, beta, gamma);
+#else
+  return K_nlm_parallel(n, l, m, alpha, beta, gamma);
+#endif
 }
 
 float_type eval_S(const int ni, const int li, const int mi, const int nj,
