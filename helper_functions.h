@@ -6,9 +6,11 @@
 #define HYLLERAAS_HELPER_FUNCTIONS_H
 
 #include "Eigen/Eigen"
+#include <cstdlib>
 #include <iostream>
-#include <vector>
+#include <mutex>
 #include <thread>
+#include <vector>
 
 #ifdef USE_MULTIPRECISION
 #include <boost/math/distributions/binomial.hpp>
@@ -30,13 +32,11 @@ using float_type = double;
 using int_type = long long int;
 #endif
 
-typedef std::vector<std::pair<std::vector<int>, std::vector<double>>> BasisFn;
+using BasisFn = std::vector<std::pair<std::vector<int>, std::vector<double>>>;
 // example: {{{0,0,0},{1.6875, 1.6875, 0.0}}}
 // general: {{{n,l,m},{alpha/2, beta/2, gamma/2}}}
-
-typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic,
-                      Eigen::RowMajor>
-    Matrix;
+using Matrix =
+    Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 // Structs
 struct hylleraas_results {

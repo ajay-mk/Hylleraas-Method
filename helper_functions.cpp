@@ -43,9 +43,18 @@ float_type K_nlm_openmp(const int n, const int l, const int m,
                  compute_factorial<float_type>(l + 1) *
                  compute_factorial<float_type>(m + 1);
   float_type value = 0.0;
+  // set number of threads
+  int nthreads;
+  char *num_threads = getenv("OMP_NUM_THREADS");
+  if (num_threads != nullptr) {
+    nthreads = std::atoi(num_threads);
+    omp_set_num_threads(nthreads);
+  } else {
+    nthreads = omp_get_max_threads();
+    omp_set_num_threads(nthreads);
+  }
 
-#pragma omp parallel for reduction(+ : value)
-
+#pragma omp parallel for collapse(3) reduction(+ : value)
   for (auto a = 0; a <= n + 1; ++a) {
     for (auto b = 0; b <= l + 1; ++b) {
       for (auto c = 0; c <= m + 1; ++c) {
@@ -71,20 +80,26 @@ float_type K_nlm_parallel(const int n, const int l, const int m,
                  compute_factorial<float_type>(m + 1);
   std::vector<std::thread> threads;
   std::vector<float_type> values(n + 2, 0.0);
+  std::mutex mtx;
+
   for (auto a = 0; a <= n + 1; ++a) {
     threads.emplace_back([&, a]() {
+      float_type my_value = 0.0;
       for (auto b = 0; b <= l + 1; ++b) {
         for (auto c = 0; c <= m + 1; ++c) {
-          values[a] += compute_binomial_coeff<float_type>(l + 1 - b + a, a) *
-                       compute_binomial_coeff<float_type>(m + 1 - c + b, b) *
-                       compute_binomial_coeff<float_type>(n + 1 - a + c, c) /
-                       (pow(alpha + beta, l - b + a + 2) *
-                        pow(alpha + gamma, n - a + c + 2) *
-                        pow(beta + gamma, m - c + b + 2));
+          my_value += compute_binomial_coeff<float_type>(l + 1 - b + a, a) *
+                      compute_binomial_coeff<float_type>(m + 1 - c + b, b) *
+                      compute_binomial_coeff<float_type>(n + 1 - a + c, c) /
+                      (pow(alpha + beta, l - b + a + 2) *
+                       pow(alpha + gamma, n - a + c + 2) *
+                       pow(beta + gamma, m - c + b + 2));
         }
       }
+      std::lock_guard<std::mutex> lock(mtx);
+      values[a] = my_value;
     });
   }
+
   for (auto &thread : threads) {
     thread.join();
   }
